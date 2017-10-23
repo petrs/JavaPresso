@@ -1,4 +1,5 @@
 # JavaPresso
+[![Latest release](https://img.shields.io/github/release/petrs/JavaPresso.svg)](https://github.com/petrs/JavaPresso/releases/latest)
 
 **Ever wanted to get rid of many files with many Java classes and copy just a single file into your project instead?** 
 
