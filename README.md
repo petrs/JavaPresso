@@ -26,19 +26,22 @@ package  mylibrary;
 import ... // all imports from A,B and C collated together without duplicities
 
 public class presso {
+    // ... original head section of class A (license, authors...)
     static class A {
        // ... original implementation of class A
     }
+    // ...
     static class B {
        // ... original implementation of class B
     }
+    // ...
     static class C {
        // ... original implementation of class C
     }
 }
 ```
 
-A single file `presso.java` can be now copied into your project directory. All classes are made available for use by typing `import mylibrary.presso;`
+A single file `presso.java` can be now copied into your project directory. All classes are made available for use by typing `import mylibrary.presso.*;`
 
 ## Why?
 
