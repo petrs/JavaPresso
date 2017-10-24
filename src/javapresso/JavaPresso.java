@@ -72,7 +72,7 @@ public class JavaPresso {
             }
         }
 
-        private void packClasses(String basePath, String className) throws FileNotFoundException, IOException {
+        private void packClasses(String basePath, String namespaceName) throws FileNotFoundException, IOException {
             String filesPath = basePath + File.separator;
             File dir = new File(filesPath);
             String[] filesArray = dir.list();
@@ -88,14 +88,12 @@ public class JavaPresso {
                 //
                 // Header
                 //
-                int startOffset = filesContent.get(0).packageLine.indexOf("package ") + "package ".length();
-                int endOffset = filesContent.get(0).packageLine.lastIndexOf(";");
-                String packageName = filesContent.get(0).packageLine.substring(startOffset, endOffset);
-                String fileName = String.format("%s\\%s.java", basePath, className);
+                String fileName = String.format("%s\\%s.java", basePath, namespaceName);
                 FileOutputStream file = new FileOutputStream(fileName);
-                String header = "// Merged file class by JavaCodePacker \r\n";
-                header += String.format("// Add 'import %s.%s;' to access all classes as usual.\r\n", packageName, className);
-                header += filesContent.get(0).packageLine;
+                String header = "// Merged file class by JavaPresso (https://github.com/petrs/JavaPresso) \r\n";
+                header += "// TODO: Fix 'your_package' to your real package name as necessary\r\n";
+                header += String.format("// TODO: Add 'import your_package.%s.*;' to access all classes as usual\r\n\r\n", namespaceName);
+                header += "package your_package;\r\n";
                 header += "\r\n";
                 // Add import lines without duplicities
                 Set set = new TreeSet(String.CASE_INSENSITIVE_ORDER);
@@ -107,7 +105,7 @@ public class JavaPresso {
                     header += importLine;
                 }
 
-                header += String.format("\r\npublic class %s {\r\n\r\n", className);
+                header += String.format("\r\npublic class %s {\r\n\r\n", namespaceName);
 
                 file.write(header.getBytes());
                 file.flush();
