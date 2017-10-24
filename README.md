@@ -16,6 +16,8 @@ java -jar JavaPresso.jar input_folder_path namespace_name
 Takes all `*.java` files from `input_folder_path` and inserts them as static subclasses into single `namespace_name.java` file. 
 The implementation of classes is otherwise unchanged.
 
+If you don't want to include all classes from an original package, simply delete corresponding files before running JavaPresso.
+
 
 ## Example
 
