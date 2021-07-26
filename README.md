@@ -11,9 +11,9 @@ Makes inclusion of a target library (with multiple files) simpler by wrapping al
 
 ## Usage
 ```
-java -jar JavaPresso.jar input_folder_path namespace_name 
+java -jar JavaPresso.jar input_folder_path namespace_name compressed_file_version
 ```
-Takes all `*.java` files from `input_folder_path` and inserts them as static subclasses into single `namespace_name.java` file. 
+Takes all `*.java` files from `input_folder_path` and inserts them as static subclasses into single `namespace_name.java` file. One static attribute named version is created and set to `compressed_file_version` value. 
 The implementation of classes is otherwise unchanged.
 
 If you don't want to include all classes from an original package, simply delete corresponding files before running JavaPresso.
