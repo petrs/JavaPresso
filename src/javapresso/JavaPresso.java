@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class JavaPresso {
+    public static final String JAVA_PRESSO_VERSION = "1.0.1";
         /**
          * @param args the command line arguments
          */
@@ -41,11 +42,18 @@ public class JavaPresso {
         }
 
         private void run(String[] args) {
+            info();
             try {
                 if (args.length < 2) {
                     help();
                 } else {
-                    packClasses(args[0], args[1]);
+                    if (args.length < 3) {
+                        System.out.println("Info: you omitted the version argument, using 'undefined' instead");
+                        packClasses(args[0], args[1], "undefined");
+                    }
+                    else {
+                        packClasses(args[0], args[1], args[2]);
+                    }
                 }
             } catch (Exception ex) {
                 System.out.printf(ex.getLocalizedMessage());
@@ -57,8 +65,22 @@ public class JavaPresso {
          * Prints help.
          */
         private void help() {
-            System.out.println("Usage: java -jar JavaPresso.jar input_folder_path namespace_name");
+            System.out.println("Usage: java -jar JavaPresso.jar input_folder_path namespace_name compressed_file_version");
+            System.out.println("Example: 'java -jar JavaPresso.jar C:\\JCMathLib\\src\\opencrypto\\jcmathlib\\ jcmathlib 0.4.2'");
         }
+        
+        /**
+         * Prints info.
+         */
+        private void info() {
+            System.out.println("\n-----------------------------------------------------------------------   ");
+            System.out.println("JavaPresso " + JAVA_PRESSO_VERSION + " - compress multiple source files of library into a single include.");
+            System.out.println("Petr Svenda 2016-2021 (https://github.com/petrs/).");
+            help();
+            System.out.println("Please check if you use the latest version at\n  https://github.com/petrs/JavaPresso/releases/latest.");
+
+            System.out.println("-----------------------------------------------------------------------\n");
+        }        
 
         class JavaFileInfo {
 
@@ -72,10 +94,16 @@ public class JavaPresso {
             }
         }
 
-        private void packClasses(String basePath, String namespaceName) throws FileNotFoundException, IOException {
+        private void packClasses(String basePath, String namespaceName, String version) throws FileNotFoundException, IOException {
             String filesPath = basePath + File.separator;
             File dir = new File(filesPath);
             String[] filesArray = dir.list();
+            
+            System.out.println("\r\n");
+            System.out.println(String.format("input folder   = '%s'", filesPath));
+            System.out.println(String.format("namespace name = '%s'", namespaceName));
+            System.out.println(String.format("version        = '%s'", version));
+            System.out.println("\r\n");
 
             if ((filesArray != null) && (dir.isDirectory() == true)) {
 
@@ -91,7 +119,7 @@ public class JavaPresso {
                 String fileName = String.format("%s\\%s.java", basePath, namespaceName);
                 FileOutputStream file = new FileOutputStream(fileName);
                 String header = "// Merged file class by JavaPresso (https://github.com/petrs/JavaPresso) \r\n";
-                header += "// TODO: Fix 'your_package' to your real package name as necessary\r\n";
+                header += "// TODO: Change 'your_package' to your real package name as necessary\r\n";
                 header += String.format("// TODO: Add 'import your_package.%s.*;' to access all classes as usual\r\n\r\n", namespaceName);
                 header += "package your_package;\r\n";
                 header += "\r\n";
@@ -105,8 +133,10 @@ public class JavaPresso {
                     header += importLine;
                 }
 
-                header += String.format("\r\npublic class %s {\r\n\r\n", namespaceName);
+                header += String.format("\r\npublic class %s {\r\n", namespaceName);
+                header += String.format("    public static String version = \"%s\"; \r\n\r\n", version);
 
+        
                 file.write(header.getBytes());
                 file.flush();
 
@@ -129,6 +159,8 @@ public class JavaPresso {
                 file.write(footer.getBytes());
                 file.flush();
                 file.close();
+                
+                System.out.println(String.format("Successfully compressed into '%s'", fileName));
             } else {
                 System.out.println("directory '" + filesPath + "' is empty");
             }
@@ -150,7 +182,7 @@ public class JavaPresso {
                     } else if (trimedStrLine.startsWith("import ")) {
                         fileInfo.importLines.add(strLine);
                     } else if (trimedStrLine.startsWith("public class ")) {
-                        fileInfo.fileContent.add(strLine.replaceAll("public class ", "static class "));
+                        fileInfo.fileContent.add(strLine.replaceAll("public class ", "public static class "));
                     } else {
                         fileInfo.fileContent.add(strLine);
                     }
